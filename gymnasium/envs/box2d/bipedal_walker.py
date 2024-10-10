@@ -63,22 +63,6 @@ HULL_FD = fixtureDef(
     restitution=0.0,
 )  # 0.99 bouncy
 
-LEG_FD = fixtureDef(
-    shape=polygonShape(box=(LEG_W / 2, LEG_H / 2)),
-    density=1.0,
-    restitution=0.0,
-    categoryBits=0x0020,
-    maskBits=0x001,
-)
-
-LOWER_FD = fixtureDef(
-    shape=polygonShape(box=(0.8 * LEG_W / 2, LEG_H / 2)),
-    density=1.0,
-    restitution=0.0,
-    categoryBits=0x0020,
-    maskBits=0x001,
-)
-
 
 class ContactDetector(contactListener):
     def __init__(self, env):
@@ -174,8 +158,10 @@ class BipedalWalker(gym.Env, EzPickle):
         "render_fps": FPS,
     }
 
-    def __init__(self, render_mode: Optional[str] = None, hardcore: bool = False):
+    def __init__(self, render_mode: Optional[str] = None, hardcore: bool = False, leg_h = LEG_H, leg_w = LEG_W, friction=FRICTION):
         EzPickle.__init__(self, render_mode, hardcore)
+
+        self.leg_h, self.leg_w = leg_h, leg_w
         self.isopen = True
 
         self.world = Box2D.b2World()
@@ -188,12 +174,12 @@ class BipedalWalker(gym.Env, EzPickle):
 
         self.fd_polygon = fixtureDef(
             shape=polygonShape(vertices=[(0, 0), (1, 0), (1, -1), (0, -1)]),
-            friction=FRICTION,
+            friction=friction,
         )
 
         self.fd_edge = fixtureDef(
             shape=edgeShape(vertices=[(0, 0), (1, 1)]),
-            friction=FRICTION,
+            friction=friction,
             categoryBits=0x0001,
         )
 
@@ -436,6 +422,24 @@ class BipedalWalker(gym.Env, EzPickle):
         options: Optional[dict] = None,
     ):
         super().reset(seed=seed)
+
+
+        LEG_FD = fixtureDef(
+            shape=polygonShape(box=(self.leg_w / 2, self.leg_h / 2)),
+            density=1.0,
+            restitution=0.0,
+            categoryBits=0x0020,
+            maskBits=0x001,
+        )
+
+        LOWER_FD = fixtureDef(
+            shape=polygonShape(box=(0.8 * self.leg_w / 2, self.leg_h / 2)),
+            density=1.0,
+            restitution=0.0,
+            categoryBits=0x0020,
+            maskBits=0x001,
+        )
+
         self._destroy()
         self.world.contactListener_bug_workaround = ContactDetector(self)
         self.world.contactListener = self.world.contactListener_bug_workaround
