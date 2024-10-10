@@ -100,7 +100,7 @@ register(
 )
 
 register(
-    id="BipedalWalker-v3",
+    id="BipedalWalker-v3-modified",
     entry_point="gymnasium.envs.box2d.bipedal_walker:BipedalWalker",
     max_episode_steps=1600,
     reward_threshold=300,
