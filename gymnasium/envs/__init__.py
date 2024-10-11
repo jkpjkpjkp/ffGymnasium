@@ -107,6 +107,13 @@ register(
 )
 
 register(
+    id="BipedalWalker-v92",
+    entry_point="gymnasium.envs.box2d.bipedal_walker:BipedalWalker92",
+    max_episode_steps=1600,
+    reward_threshold=300,
+)
+
+register(
     id="BipedalWalkerHardcore-v3",
     entry_point="gymnasium.envs.box2d.bipedal_walker:BipedalWalker",
     kwargs={"hardcore": True},

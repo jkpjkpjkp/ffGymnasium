@@ -880,3 +880,8 @@ if __name__ == "__main__":
 
         if terminated or truncated:
             break
+
+
+class BipedalWalker92(BipedalWalker):
+    def __init__(self, render_mode: Optional[str] = None, hardcore: bool = False, leg_h = LEG_H * 0.92, leg_w = LEG_W, friction=FRICTION):
+        super().__init__(render_mode, hardcore, leg_h, leg_w, friction)
