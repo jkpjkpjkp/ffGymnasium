@@ -158,10 +158,10 @@ class BipedalWalker(gym.Env, EzPickle):
         "render_fps": FPS,
     }
 
-    def __init__(self, render_mode: Optional[str] = None, hardcore: bool = False, leg_h = LEG_H, leg_w = LEG_W, friction=FRICTION):
+    def __init__(self, render_mode: Optional[str] = None, hardcore: bool = False, leg_h = LEG_H, leg_w = LEG_W, friction=FRICTION, game_over_panalty=-100):
         EzPickle.__init__(self, render_mode, hardcore)
 
-        self.leg_h, self.leg_w = leg_h, leg_w
+        self.leg_h, self.leg_w, self.game_over_panalty = leg_h, leg_w, game_over_panalty
         self.isopen = True
 
         self.world = Box2D.b2World()
@@ -607,7 +607,7 @@ class BipedalWalker(gym.Env, EzPickle):
 
         terminated = False
         if self.game_over or pos[0] < 0:
-            reward = -100
+            reward = self.game_over_panalty
             terminated = True
         if pos[0] > (TERRAIN_LENGTH - TERRAIN_GRASS) * TERRAIN_STEP:
             terminated = True
@@ -883,5 +883,9 @@ if __name__ == "__main__":
 
 
 class BipedalWalker92(BipedalWalker):
-    def __init__(self, render_mode: Optional[str] = None, hardcore: bool = False, leg_h = LEG_H * 0.92, leg_w = LEG_W, friction=FRICTION):
-        super().__init__(render_mode, hardcore, leg_h, leg_w, friction)
+    def __init__(self, render_mode: Optional[str] = None, hardcore: bool = False, leg_h = LEG_H * 0.92, leg_w = LEG_W, friction=FRICTION, game_over_penalty=-100):
+        super().__init__(render_mode, hardcore, leg_h, leg_w, friction, game_over_penalty)
+
+class BipedalWalker2(BipedalWalker):
+    def __init__(self, render_mode: Optional[str] = None, hardcore: bool = False, leg_h = LEG_H, leg_w = LEG_W, friction=FRICTION, game_over_penalty=-2):
+        super().__init__(render_mode, hardcore, leg_h, leg_w, friction, game_over_penalty)
